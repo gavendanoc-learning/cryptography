@@ -65,10 +65,8 @@ def decipher(ciphertext, markedPoints, rotate, size):
   ciphertext = np.array(list(ciphertext), dtype='S1')
   canvas = ciphertext.reshape((size, size))
   size = canvas.shape[0]
-  selected = []
-  for i in range(4):
-    selected.extend(canvas[markedPoints[:, 0], markedPoints[:, 1]])
-    markedPoints = sortPoints(rotate(markedPoints, size))
+  points = makeFullRotation(markedPoints, rotate, size)
+  selected = canvas[points[:, 0], points[:, 1]]
   return (b''.join(selected)).decode("utf-8")
 
 description = "This is a turning grille cipher and decipher. Use with caution"
