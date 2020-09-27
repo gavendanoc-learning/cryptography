@@ -39,14 +39,26 @@ counterClockwise = lambda row, column, size : (size - column - 1, row)
 rotateClockwise = lambda points, size: np.vstack(clockwise(points[:, 0], points[:, 1], size)).T
 rotateCounterClockwise = lambda points, size: np.vstack(counterClockwise(points[:, 0], points[:, 1], size)).T
 
+def removeDuplicates(points):
+  _, idx = np.unique(points, return_index=True, axis=0)
+  return points[np.sort(idx)]
+
+def makeFullRotation(points, rotate, size):
+  points = sortPoints(points)
+  availablePoints = []
+  for _ in range(4):
+    availablePoints.append(points)
+    points = sortPoints(rotate(points, size))
+  availablePoints = np.vstack(availablePoints)
+  return removeDuplicates(availablePoints)
+
+
 def cipher(plaintext, markedPoints, rotate, size, paddingCharacter="_"):
   plaintext = np.array(list(plaintext), dtype='S1')
   canvas = np.empty((size, size), dtype = "S1")
-  totalPoints = markedPoints.shape[0]
   canvas[:] = paddingCharacter
-  for i in range(0, 4 * totalPoints, totalPoints):
-    canvas[markedPoints[:, 0], markedPoints[:, 1]] = plaintext[i:i+totalPoints]
-    markedPoints = sortPoints(rotate(markedPoints, size))
+  points = makeFullRotation(markedPoints, rotate, size)
+  canvas[points[:, 0], points[:, 1]] = plaintext[:points.shape[0]]
   return (b''.join(canvas.ravel())).decode("utf-8")
 
 def decipher(ciphertext, markedPoints, rotate, size):
