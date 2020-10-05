@@ -74,14 +74,14 @@ if __name__ == "__main__":
   description = "This is a hill cipher and decipher. Use with caution"
   parser = argparse.ArgumentParser(description=description)
   parser.add_argument("-a", "--action", help="select decipher/cipher mode", choices=["cipher", "decipher"], required=True)
-  parser.add_argument("-te", "--text", help="contains ciphertext or plaintext", required=True, type=alphabetical)
+  parser.add_argument("-m", "--message", help="contains ciphertext or plaintext", required=True, type=alphabetical)
   parser.add_argument("-k", "--key", help="keyword", nargs=4, type=int)
   args = parser.parse_args()
 
   keyMatrix = np.array(args.key).reshape((2, 2))
 
   if args.action == "cipher":
-    plaintext = args.text
+    plaintext = args.message
     processedtext = preprocess(plaintext, padding=2)
     ciphertext = cipher(processedtext, keyMatrix)
     print ("Action : cipher")
@@ -92,7 +92,7 @@ if __name__ == "__main__":
     print ("plaintext :  ", putSpaces(processedtext, 2))
     print ("ciphertext : ", putSpaces(ciphertext, 2))
   else:
-    ciphertext = args.text.replace(" ", "")
+    ciphertext = args.message.replace(" ", "")
     plaintext, modular_inverse = decipher(ciphertext, keyMatrix)
 
     print ("Action : decipher")
