@@ -34,6 +34,12 @@ def sortPoints(points):
   ind = np.lexsort((points[:,1],points[:,0])) 
   return points[ind]
 
+def printMatrix(markedPoints, size):
+  grille = np.zeros((size, size), dtype=int)
+  grille[markedPoints[:, 0], markedPoints[:, 1]] = 1
+  print(grille)
+  
+
 clockwise = lambda row, column, size: (column, size - row - 1)
 counterClockwise = lambda row, column, size : (size - column - 1, row)
 rotateClockwise = lambda points, size: np.vstack(clockwise(points[:, 0], points[:, 1], size)).T
@@ -90,6 +96,8 @@ if args.action == "cipher":
     ciphertext, encrypted_until = cipher(processedtext, markedPoints, rotateCounterClockwise, size)
 
   print ("Action : cipher")
+  print ("Turning grille")
+  printMatrix(markedPoints, size)
   print ("plaintext :  ", putSpaces(processedtext[:encrypted_until], size))
   print ("ciphertext : ", putSpaces(ciphertext, size))
 else:
@@ -101,5 +109,7 @@ else:
   print (putSpaces(plaintext, size))
 
   print ("Action : decipher")
+  print ("Turning grille")
+  printMatrix(markedPoints, size)
   print ("ciphertext : ", putSpaces(ciphertext, size))
   print ("plaintext :  ", putSpaces(plaintext, size))
