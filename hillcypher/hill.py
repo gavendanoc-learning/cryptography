@@ -75,7 +75,7 @@ if __name__ == "__main__":
   parser = argparse.ArgumentParser(description=description)
   parser.add_argument("-a", "--action", help="select decipher/cipher mode", choices=["cipher", "decipher"], required=True)
   parser.add_argument("-te", "--text", help="contains ciphertext or plaintext", required=True, type=alphabetical)
-  parser.add_argument("-k", "--key", help="keyword for the vigenere cipher", nargs=4, type=int)
+  parser.add_argument("-k", "--key", help="keyword", nargs=4, type=int)
   args = parser.parse_args()
 
   keyMatrix = np.array(args.key).reshape((2, 2))

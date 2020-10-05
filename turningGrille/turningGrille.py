@@ -52,14 +52,13 @@ def makeFullRotation(points, rotate, size):
   availablePoints = np.vstack(availablePoints)
   return removeDuplicates(availablePoints)
 
-
 def cipher(plaintext, markedPoints, rotate, size, paddingCharacter="_"):
   plaintext = np.array(list(plaintext), dtype='S1')
   canvas = np.empty((size, size), dtype = "S1")
   canvas[:] = paddingCharacter
   points = makeFullRotation(markedPoints, rotate, size)
   canvas[points[:, 0], points[:, 1]] = plaintext[:points.shape[0]]
-  return (b''.join(canvas.ravel())).decode("utf-8")
+  return (b''.join(canvas.ravel())).decode("utf-8"), points.shape[0]
 
 def decipher(ciphertext, markedPoints, rotate, size):
   ciphertext = np.array(list(ciphertext), dtype='S1')
@@ -86,10 +85,13 @@ size = args.size
 if args.action == "cipher":
   processedtext = preprocess(args.message, 4 * totalPoints)
   if args.rotation == 'cw':
-    ciphertext = cipher(processedtext, markedPoints, rotateClockwise, size)
+    ciphertext, encrypted_until = cipher(processedtext, markedPoints, rotateClockwise, size)
   else:
-    ciphertext = cipher(processedtext, markedPoints, rotateCounterClockwise, size)
-  print (putSpaces(ciphertext, size))
+    ciphertext, encrypted_until = cipher(processedtext, markedPoints, rotateCounterClockwise, size)
+
+  print ("Action : cipher")
+  print ("plaintext :  ", putSpaces(processedtext[:encrypted_until], size))
+  print ("ciphertext : ", putSpaces(ciphertext, size))
 else:
   ciphertext = preprocess(args.message)
   if args.rotation == 'cw':
@@ -97,3 +99,7 @@ else:
   else:
     plaintext = decipher(ciphertext, markedPoints, rotateCounterClockwise, size)
   print (putSpaces(plaintext, size))
+
+  print ("Action : decipher")
+  print ("ciphertext : ", putSpaces(ciphertext, size))
+  print ("plaintext :  ", putSpaces(plaintext, size))
